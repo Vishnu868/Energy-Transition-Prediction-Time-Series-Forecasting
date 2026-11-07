@@ -11,7 +11,7 @@ As grids move toward variable renewable generation, accurate load forecasting is
 - Statistical (**ARIMA, SARIMA**) vs deep learning (**LSTM**) forecasting, plus **GARCH** for volatility
 - Stationarity analysis with the **ADF** and **KPSS** tests, and order selection with **ACF/PACF**
 - **Window-size ablation study** for the LSTM
-- **EnergyTripAI dashboard**: CSV upload, breaker/voltage configuration, live forecasts, trip probability and stability score
+- **EnergyTripAI app** (FastAPI + PyTorch): CSV upload, breaker/voltage configuration, LSTM power forecast, Bi-LSTM-with-attention trip classifier (Normal / Warning / Trip), appliance fault ranking, SHAP explainability and a 0–100 stability score
 - **LSTM is the best model**: MAPE **4.3%**, compared with 7.8% for ARIMA
 
 ## Pipeline
@@ -84,8 +84,17 @@ Energy-Transition-Prediction-Time-Series-Forecasting/
 │   ├── preprocessing.py    # cleaning, scaling, ADF/KPSS, ACF/PACF
 │   ├── models.py           # ARIMA, SARIMA, LSTM, GARCH
 │   └── train_evaluate.py   # training, metrics, window ablation
-├── app/
-│   └── energytrip_app.py   # Streamlit EnergyTripAI dashboard
+├── energy-trip-ai/         # EnergyTripAI application
+│   ├── backend/
+│   │   ├── main.py         # FastAPI app (/api/upload, /api/predict, /health)
+│   │   ├── routes/         # upload and prediction endpoints
+│   │   ├── services/       # preprocessor, feature engineer, label generator,
+│   │   │                   # forecaster, classifier, fault detector
+│   │   ├── models/         # LSTM forecaster, Bi-LSTM + attention classifier
+│   │   ├── training/       # train_forecaster, train_classifier, evaluate
+│   │   └── saved_models/   # trained forecaster.pt and classifier.pt
+│   ├── frontend/           # HTML/CSS/JS + Chart.js dashboard
+│   └── data/               # UK-DALE converter + small sample CSV
 └── requirements.txt
 ```
 
@@ -94,12 +103,20 @@ Energy-Transition-Prediction-Time-Series-Forecasting/
 ```bash
 pip install -r requirements.txt
 python src/train_evaluate.py --data data/load.csv --time-col timestamp --target load
-streamlit run app/energytrip_app.py
+```
+
+**EnergyTripAI app** (trained on UK-DALE; see [energy-trip-ai/README.md](energy-trip-ai/README.md) for training options):
+
+```bash
+cd energy-trip-ai/backend
+pip install -r requirements.txt
+uvicorn main:app --port 8000          # API docs at http://localhost:8000/docs
+# then open energy-trip-ai/frontend/index.html and upload a CSV (e.g. data/upload.csv)
 ```
 
 ## Tech Stack
 
-Python · statsmodels · TensorFlow/Keras · arch · pandas · NumPy · Plotly · Streamlit
+Python · statsmodels · TensorFlow/Keras · arch · PyTorch · FastAPI · SHAP · pandas · NumPy · Chart.js
 
 ## References
 

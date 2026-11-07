@@ -10,3 +10,8 @@ outputs/
 *.pt
 *.joblib
 .env
+!energy-trip-ai/data/
+!energy-trip-ai/backend/saved_models/*.pt
+energy-trip-ai/data/*.dat
+energy-trip-ai/data/sample_ukdale.csv
+energy-trip-ai/backend/uploads/

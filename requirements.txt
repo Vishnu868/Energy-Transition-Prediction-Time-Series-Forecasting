@@ -5,4 +5,3 @@ statsmodels>=0.14
 tensorflow>=2.15
 arch>=6.2
 plotly>=5.18
-streamlit>=1.30

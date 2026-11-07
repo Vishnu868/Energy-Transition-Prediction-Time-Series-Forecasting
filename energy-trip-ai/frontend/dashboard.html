@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyTripAI — Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-page">
+
+    <header>
+        <div class="logo">⚡ EnergyTripAI</div>
+        <nav>
+            <a href="index.html">Upload</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+        </nav>
+        <div id="locationBadge" class="location-badge"></div>
+    </header>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="spinner"></div>
+        <p>Running AI Analysis...</p>
+    </div>
+
+    <main class="dashboard-container" id="dashboardContent" style="display:none;">
+
+        <!-- ============ KPI CARDS ROW ============ -->
+        <section class="kpi-row">
+            <div class="kpi-card" id="kpiStatus">
+                <div class="kpi-label">System Status</div>
+                <div class="kpi-value" id="statusBadge">—</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Current Power</div>
+                <div class="kpi-value" id="kpiPower">— W</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Current Draw</div>
+                <div class="kpi-value" id="kpiCurrent">— A</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Load %</div>
+                <div class="kpi-value" id="kpiLoad">—%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Trip Probability</div>
+                <div class="kpi-value" id="kpiTripProb">—%</div>
+            </div>
+            <div class="kpi-card stability-card">
+                <div class="kpi-label">Stability Score</div>
+                <div class="kpi-value" id="kpiStability">—</div>
+                <div class="stability-bar-wrap">
+                    <div class="stability-bar" id="stabilityBar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ MAIN CHART: POWER + FORECAST ============ -->
+        <section class="chart-section">
+            <div class="chart-card wide">
+                <h2>Power Load Timeline &amp; Forecast</h2>
+                <div class="threshold-legend">
+                    <span class="legend-item trip-legend">Trip Threshold</span>
+                    <span class="legend-item warn-legend">Warning Threshold</span>
+                </div>
+                <canvas id="powerChart" height="80"></canvas>
+            </div>
+        </section>
+
+        <!-- ============ CLASSIFICATION + PROB ============ -->
+        <section class="two-col">
+            <div class="chart-card">
+                <h2>Class Probabilities</h2>
+                <canvas id="probChart" height="160"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h2>Label Distribution in Dataset</h2>
+                <canvas id="labelChart" height="160"></canvas>
+            </div>
+        </section>
+
+        <!-- ============ APPLIANCE FAULT RANKING ============ -->
+        <section class="fault-section">
+            <div class="chart-card wide">
+                <h2>⚠️ Appliance Fault Ranking</h2>
+                <p class="section-hint">Appliances ranked by overload contribution. Top appliance is most likely cause of trip.</p>
+                <div id="faultTable"></div>
+            </div>
+        </section>
+
+        <!-- ============ SHAP EXPLAINABILITY ============ -->
+        <section class="chart-section">
+            <div class="chart-card wide">
+                <h2>🧠 AI Explainability (SHAP Feature Importance)</h2>
+                <p class="section-hint">Features most influential in trip prediction (higher = more important)</p>
+                <canvas id="shapChart" height="80"></canvas>
+            </div>
+        </section>
+
+        <!-- ============ DATA INFO ============ -->
+        <section class="info-section">
+            <div class="info-card" id="dataInfoCard"></div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
